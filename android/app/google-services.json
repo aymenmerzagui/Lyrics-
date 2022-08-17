@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "114867235606",
+    "project_id": "lyrics-1e268",
+    "storage_bucket": "lyrics-1e268.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114867235606:android:03c85f115cf14605297e37",
+        "android_client_info": {
+          "package_name": "com.example.lyrics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114867235606-b5qevjdff485vl1slj5ehljjsd17kne3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuWpWmIhXi-q3DXVTy95c6mD-uKnLGxbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114867235606-b5qevjdff485vl1slj5ehljjsd17kne3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
