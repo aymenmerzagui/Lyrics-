@@ -64,6 +64,7 @@ dispose (){
 }
   }
 
+/*
 class currentSongController {
   var song_lyrics = StreamController<String> .broadcast();
   var timeStream = StreamController<Duration>.broadcast();
@@ -73,3 +74,4 @@ class currentSongController {
   DBusClient _dbusClient;   //yield is like return but without ending the function
 
 }
+*/
