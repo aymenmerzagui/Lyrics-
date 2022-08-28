@@ -3,7 +3,7 @@ import 'lyric.dart';
 import 'package:flutter/material.dart';
 
 class lyricsView extends StatelessWidget {
-  late final List<Lyric> lyrics;
+  late final List<Lyric?> lyrics;
 
   late final double lyricSize;
   late final int highlightedLyricIdx;
@@ -56,7 +56,7 @@ class lyricsView extends StatelessWidget {
     var lyricsWidgets = lyrics
         .asMap()
         .map((lyricIdx, lyric) =>
-        MapEntry(lyricIdx, lyricLine(context, lyricIdx, lyric)))
+        MapEntry(lyricIdx, lyricLine(context, lyricIdx, lyric!)))
         .values
         .toList();
     var downPadding = Container(

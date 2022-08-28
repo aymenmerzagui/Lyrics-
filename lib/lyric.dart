@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'lyrics_source.dart';
-import 'package:flutter/widgets.dart';
+
 
 class Lyric {
   late Duration time;
@@ -20,9 +20,9 @@ class LyricController {
   var _didInit = false;
   late lyrics_Source source = lyrics_Source();
 
-  fetchNewLyrics(String song_lyrics) async {
+  fetchNewLyrics(String song_name) async {
     statusMessageStream.sink.add("Loking for lyrics");
-    var lyrics = await source.fetchLyrics(song_lyrics);
+    var lyrics = await source.fetchLyrics(song_name);
     if (lyrics == null) {
       statusMessageStream.sink.add("Lyrics not found");
     } else {
@@ -37,7 +37,7 @@ class LyricController {
       return;
     }
     var newIdx = lasthighlightedLyricIdx;
-    lastLyrics?.asMap()?.forEach((lyricsIdx, lyric) {
+    lastLyrics.asMap().forEach((lyricsIdx, lyric) {
       if (temps >= lyric!.time) {
         newIdx = lyricsIdx;
       }
@@ -51,27 +51,22 @@ class LyricController {
     lasthighlightedLyricIdx = idx;
     highlightedLyricIdxStream.sink.add(idx);
   }
-  init (String song_lyrics ,Stream <String> lyricsStream ,Stream<Duration> timeStream){
-    if(!_didInit){
-      lyricsStream.listen(fetchNewLyrics);
+
+  init(String song_name,
+      Stream<Duration> timeStream) {
+    if (!_didInit) {
+      fetchNewLyrics(song_name);
       timeStream.listen(updateCurrentLyrics);
-
-    }}
-dispose (){
-  lyricsStream.close();
-      highlightedLyricIdxStream.close();
-
-}
+    }
   }
 
-/*
-class currentSongController {
-  var song_lyrics = StreamController<String> .broadcast();
-  var timeStream = StreamController<Duration>.broadcast();
-  late String lastSongLyrics ;
-  Duration lastTime = Duration();
- var _didInit =false ;
-  DBusClient _dbusClient;   //yield is like return but without ending the function
-
+  dispose() {
+    lyricsStream.close();
+    highlightedLyricIdxStream.close();
+  }
 }
-*/
+
+
+
+
+
