@@ -15,9 +15,8 @@ class LyricController {
   var lyricsStream = StreamController<List<Lyric?>>.broadcast();
   var highlightedLyricIdxStream = StreamController<int>.broadcast();
   var statusMessageStream = StreamController<String?>.broadcast();
-  late List<Lyric?> lastLyrics;
-  late int lasthighlightedLyricIdx;
-  var _didInit = false;
+  late List<Lyric?> lastLyrics ;
+  int lasthighlightedLyricIdx=-1;
   late lyrics_Source source = lyrics_Source();
 
   fetchNewLyrics(String song_name) async {
@@ -50,14 +49,13 @@ class LyricController {
   scrollToLyric(int idx) {
     lasthighlightedLyricIdx = idx;
     highlightedLyricIdxStream.sink.add(idx);
+
   }
 
-  init(String song_name,
-      Stream<Duration> timeStream) {
-    if (!_didInit) {
+  init(String song_name) {
+
       fetchNewLyrics(song_name);
-      timeStream.listen(updateCurrentLyrics);
-    }
+
   }
 
   dispose() {

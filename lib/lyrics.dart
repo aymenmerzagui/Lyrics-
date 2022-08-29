@@ -13,8 +13,8 @@ import 'package:music/music.dart';
 class lyrics extends StatefulWidget {
   final song_name, artist, song_url, song_lyrics, image;
 
-  lyrics(
-      this.song_name, this.artist, this.song_url, this.song_lyrics, this.image);
+  lyrics(this.song_name, this.artist, this.song_url, this.song_lyrics,
+      this.image);
 
   @override
   State<lyrics> createState() => _lyricsState();
@@ -27,37 +27,76 @@ class _lyricsState extends State<lyrics> {
   bool ispaused = false;
   bool isplaying = false;
   bool isloop = false;
+  LyricController lyricController = LyricController();
+  ScrollController _scrollController = ScrollController(initialScrollOffset: 70);
 
   List<IconData> icons = [Icons.play_circle_fill, Icons.pause_circle_filled];
   AudioPlayer audioPlayer = AudioPlayer();
+
   void initState() {
     super.initState();
-    audioPlayer.onPositionChanged.listen((event) { setState(() {
-      _position=event;
-    });});
-    audioPlayer.onDurationChanged.listen((event) {setState(() {
-      _duration=event;
-    });});
+    audioPlayer.onPositionChanged.listen((event) {
+      setState(() {
+        _position = event;
+        print(_position);
+        lyricController.updateCurrentLyrics(event);
+      });
+    });
+    audioPlayer.onDurationChanged.listen((event) {
+      setState(() {
+        _duration = event;
+      });
+    });
     audioPlayer.setSourceUrl(widget.song_url);
   }
 
 
-
-
-
-  play() {
-    audioPlayer.play(UrlSource(widget.song_url));
+  Future<void> play() async {
+    return await audioPlayer.play(UrlSource(widget.song_url));
   }
+
 
   @override
   Widget build(BuildContext context) {
+    lyricController.init(widget.song_name);
+    play();
+
     return MaterialApp(
-        home: Scaffold(
-            body: Center(child: IconButton(
-      onPressed: () {
-        play();
-      },
-      icon: Icon(Icons.play_circle_fill),
-    ))));
+        theme: ThemeData.dark(),
+        home: StreamBuilder(
+          stream: lyricController.statusMessageStream.stream,
+          builder: (context, snapshot) {
+            return Center(
+                child:
+                 showLyrics()
+
+
+            );
+          },
+        ));
   }
-}
+
+Padding showLyrics(){
+  return Padding(padding: const EdgeInsets.symmetric(horizontal: 48.0),
+      child: StreamBuilder<List<Lyric?>>(
+        stream: lyricController.lyricsStream.stream,
+        builder: (context,lyricsSnapshot){
+          return StreamBuilder<int>(
+              stream: lyricController.highlightedLyricIdxStream.stream,
+              builder: (context,idxSnapshot){
+                print(idxSnapshot.data);
+                if (idxSnapshot!=null&& idxSnapshot.hasData) {
+                  var height = 52.0;
+
+                  _scrollController.animateTo(
+                    lyricsView.padding + idxSnapshot.data! * 200,
+                    duration: Duration(milliseconds: lyricsView.animationDuration),
+                    curve: Curves.easeOutCubic,
+                  );
+                }
+                return lyricsView(lyrics: lyricsSnapshot.data??[], highlightedLyricIdx: idxSnapshot.data ?? -1);
+              });
+        },
+      ),
+  );
+}}

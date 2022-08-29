@@ -3,7 +3,7 @@ import 'lyric.dart';
 import 'package:flutter/material.dart';
 
 class lyricsView extends StatelessWidget {
-  late final List<Lyric?> lyrics;
+  late final List<Lyric?>? lyrics;
 
   late final double lyricSize;
   late final int highlightedLyricIdx;
@@ -23,17 +23,17 @@ class lyricsView extends StatelessWidget {
       style = Theme.of(context)
           .textTheme
           .headline1!
-          .copyWith(color: Colors.green, fontSize: lyricSize);
+          .copyWith(color: Colors.white, fontSize: lyricSize);
     } else if (lyricIdx < highlightedLyricIdx) {
       style = Theme.of(context)
           .textTheme
           .headline5!
-          .copyWith(color: Colors.black54, fontSize: lyricSize);
+          .copyWith(color: Colors.white24, fontSize: lyricSize);
     } else {
       style = Theme.of(context)
           .textTheme
           .headline5!
-          .copyWith(color: Colors.black54, fontSize: lyricSize);
+          .copyWith(color: Colors.white30, fontSize: lyricSize);
     }
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -54,7 +54,7 @@ class lyricsView extends StatelessWidget {
     var topPadding = Container(
       constraints: BoxConstraints(minHeight: padding),);
     var lyricsWidgets = lyrics
-        .asMap()
+        ?.asMap()
         .map((lyricIdx, lyric) =>
         MapEntry(lyricIdx, lyricLine(context, lyricIdx, lyric!)))
         .values
@@ -62,7 +62,7 @@ class lyricsView extends StatelessWidget {
     var downPadding = Container(
       constraints: BoxConstraints(minHeight: padding),);
     return ListView(
-        children: <Widget>[topPadding] + lyricsWidgets + <Widget>[downPadding]
+        children: <Widget>[topPadding] + lyricsWidgets! + <Widget>[downPadding]
     );
   }
 }
