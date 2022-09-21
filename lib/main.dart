@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics/list_song.dart';
+import 'list_song.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:lyrics/lyrics.dart';
-
-import 'lyrics.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -12,56 +10,130 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return MyAppState();
-  }
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
-  final Stream<QuerySnapshot> Songs =
-      FirebaseFirestore.instance.collection("Songs").snapshots();
-
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Lyrics",
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text("Lyrics"),
-          ),
-          body: StreamBuilder<QuerySnapshot>(
-              stream: Songs,
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasError) {
-                  return Text("we have a problem");
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
-                final data = snapshot.requireData;
+        darkTheme:new ThemeData(primaryColor: Color.fromRGBO(58, 66, 86, 1.0)),
+        home: test());
+  }
+}
+class test extends StatefulWidget {
+  const test({Key? key}) : super(key: key);
 
-                return ListView.builder(
-                  itemCount: data.size,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => lyrics(
-                                  data.docs[index]["song_name"],
-                                  data.docs[index]["artist"],
-                                  data.docs[index]["song_url"],
-                                  data.docs[index]["song_lyrics"],
-                                  data.docs[index]["image"]))),
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          data.docs[index]["song_name"],
+  @override
+  State<test> createState() => _testState();
+}
+
+class _testState extends State<test> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+              appBar: AppBar(
+                title: Text("Lyrics"),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        gradient:
+                        const LinearGradient(
+                            colors: [Colors.blue, Colors.green]),
+                      ),
+                      child: MaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => list_song("Easy")),
+                          );
+                        },
+                        child: const Text(
+                          "Easy",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    );
-                  },
-                );
-              }),
-        ));
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        gradient:
+                        const LinearGradient(
+                            colors: [Colors.blue, Colors.green]),
+                      ),
+                      child: MaterialButton(
+                        onPressed: () {
+
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => list_song("Medium")));
+                        },
+                        child: const Text(
+                          "Medium",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        gradient:
+                        const LinearGradient(
+                            colors: [Colors.blue, Colors.green]),
+                      ),
+                      child: MaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => list_song("Hard")),
+                          );
+                        },
+                        child: const Text(
+                          "Hard",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+
   }
 }

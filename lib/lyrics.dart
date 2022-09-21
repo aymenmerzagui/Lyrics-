@@ -1,102 +1,127 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_const/flutter_const.dart';
-
-import 'lyric.dart';
+import 'package:lyrics/fillView2.dart';
 import 'package:lyrics/lyricsViewer.dart';
-import 'lyrics_source.dart';
-import 'lyricsViewer.dart';
+import 'fillView.dart';
+import 'lyric.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:status_view/status_view.dart';
-
-import 'package:music/music.dart';
+import 'globals.dart' as global;
 
 class lyrics extends StatefulWidget {
-  final song_name, artist, song_url, song_lyrics, image;
-
-  lyrics(this.song_name, this.artist, this.song_url, this.song_lyrics,
-      this.image);
+  final song_name, artist, song_url,level;
+  lyrics(this.level,this.song_name, this.artist, this.song_url);
 
   @override
   State<lyrics> createState() => _lyricsState();
 }
 
 class _lyricsState extends State<lyrics> {
-
-  Duration _duration = new Duration();
-  Duration _position = new Duration();
+  static Duration _position = new Duration();
   bool ispaused = false;
   bool isplaying = false;
   bool isloop = false;
   LyricController lyricController = LyricController();
-  ScrollController _scrollController = ScrollController(initialScrollOffset: 70);
-
-  List<IconData> icons = [Icons.play_circle_fill, Icons.pause_circle_filled];
   AudioPlayer audioPlayer = AudioPlayer();
+
+  void dispose() {
+    lyricController.dispose();
+    super.dispose();
+    audioPlayer.dispose();
+
+  }
 
   void initState() {
     super.initState();
+
+
     audioPlayer.onPositionChanged.listen((event) {
       setState(() {
+
         _position = event;
         print(_position);
-        lyricController.updateCurrentLyrics(event);
+          lyricController.updateCurrentLyrics(event);
+
       });
     });
-    audioPlayer.onDurationChanged.listen((event) {
-      setState(() {
-        _duration = event;
-      });
-    });
+
     audioPlayer.setSourceUrl(widget.song_url);
   }
-
 
   Future<void> play() async {
     return await audioPlayer.play(UrlSource(widget.song_url));
   }
+  Future<void> resume() async {
+    isplaying=true;
+    return await audioPlayer.resume();
 
+  }
 
   @override
   Widget build(BuildContext context) {
+/*    print(global.filled);
+    if(global.filled){
+      setState(() {
+        isplaying=true;
+      });
+    }else {
+      setState(() {
+        isplaying=false;
+      });
+    }*/
+
     lyricController.init(widget.song_name);
     play();
 
+
+
     return MaterialApp(
-        theme: ThemeData.dark(),
+
         home: StreamBuilder(
           stream: lyricController.statusMessageStream.stream,
           builder: (context, snapshot) {
-            return Center(
-                child:
-                 showLyrics()
-
-
-            );
+            return Center(child: showLyrics());
           },
         ));
   }
 
-Padding showLyrics(){
-  return Padding(padding: const EdgeInsets.symmetric(horizontal: 48.0),
+  Container showLyrics() {
+
+    return Container(
+        color: Colors.blueGrey,
+        child:
+      Padding(
+
+
+      padding: const EdgeInsets.symmetric(horizontal: 48.0),
       child: StreamBuilder<List<Lyric?>>(
         stream: lyricController.lyricsStream.stream,
-        builder: (context,lyricsSnapshot){
-          return StreamBuilder<int>(
+        builder: (context, lyricsSnapshot) {
+          return StreamBuilder<int?>(
               stream: lyricController.highlightedLyricIdxStream.stream,
-              builder: (context,idxSnapshot){
-                print(idxSnapshot.data);
-                if (idxSnapshot!=null&& idxSnapshot.hasData) {
-                  var height = 52.0;
+              builder: (context, idxSnapshot) {
+                if(idxSnapshot.hasData){
+                if(idxSnapshot.data!>1){
 
-                  _scrollController.animateTo(
-                    lyricsView.padding + idxSnapshot.data! * 200,
-                    duration: Duration(milliseconds: lyricsView.animationDuration),
-                    curve: Curves.easeOutCubic,
-                  );
-                }
-                return lyricsView(lyrics: lyricsSnapshot.data??[], highlightedLyricIdx: idxSnapshot.data ?? -1);
+                  audioPlayer.pause();
+                  return Center(child: ElevatedButton(onPressed: resume, child: Text("hello"),)
+                    ,);
+                }}
+                    return lyricsView(lyrics: lyricsSnapshot.data ?? [],
+                        highlightedLyricIdx: idxSnapshot.data ?? -1);
+
+
+
+
               });
         },
       ),
-  );
-}}
+    ));
+  }
+}
+/*
+if ((lyricsSnapshot.data![idxSnapshot.data!+1]!.time ==
+_position) */
+/*&&(filled==false)*/ /*
+) {
+audioPlayer.pause();
+print("condition");
+}*/
