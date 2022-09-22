@@ -1,50 +1,108 @@
 import 'dart:async';
+
 import 'lyric.dart';
 import 'package:flutter/material.dart';
 import 'lyrics.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'globals.dart' as global;
 
-class fillView extends StatelessWidget {
+
+
+
+class fillView extends StatefulWidget {
   late final Lyric? lyric;
-
-
+  late final bool isfilling;
+  final VoidCallback pause ;
+  final VoidCallback resume ;
   fillView({
     required this.lyric,
+    required this.isfilling,
+    required this.pause,
+    required this.resume
   });
 
-  Widget elv1() {
-    return ElevatedButton(onPressed: () {
-      global.filled = false;
-    },
-        child: Text("fill"));
-
-
-  }
-
-  Widget elv2() {
-    return ElevatedButton(onPressed: () {
-      global.filled = true;
-    },
-        child: Text("fill"));
-
-
-  }
-
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-          children: [
-            Center(
-              child: Text(
-                lyric!.text,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            elv1(),elv2()
-          ],
-        ));
+  State<fillView> createState() => _fillViewState();
+}
+
+
+
+
+
+class _fillViewState extends State<fillView> {
+  late String answer ="";
+  late List<String> wordList ;
+  late List<String> items=[] ;
+
+  void initState() {
+  super.initState();
+  wordList=widget.lyric!.text.split(" ");
+  items=widget.lyric!.text.split(" ");
+  wordList.shuffle();
+
+
+
   }
+  List<ElevatedButton> listOfButtons() {
+
+
+
+    List<ElevatedButton> buttonsList = <ElevatedButton>[];
+    for (int i = 0; i < wordList.length; i++) {
+      buttonsList
+          .add(new ElevatedButton(onPressed: (){
+            if(wordList[i]==items[0]){
+              print(wordList[i]);
+              changeText(wordList[i]);
+              items.remove(items[0]);
+              wordList.remove(wordList[i]);
+
+
+            }
+      }, child: Text(wordList[i],style: TextStyle(fontSize: 15),), style: ElevatedButton.styleFrom(
+        primary: Colors.white,
+        onPrimary: Colors.black,
+        onSurface: Colors.grey,
+      )));}
+    if(wordList.isEmpty){
+      widget.resume();
+    }
+    return buttonsList;
+
+  }
+
+
+
+
+  changeText(String s) {
+    setState(() {
+      answer = answer + s+" ";
+    });
+  }
+    @override
+  Widget build(BuildContext context) {
+
+    if(widget.isfilling){
+      widget.pause();
+    }
+    return
+      Scaffold(body:
+
+
+
+      Column(children: [
+
+        SizedBox(height: 50,),
+        Text(answer,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey,fontSize: 60),),
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            direction: Axis.horizontal ,
+        children:
+         listOfButtons(),
+        )
+      ],));
+
+  }
+
+
 }

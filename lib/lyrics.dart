@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics/fillView2.dart';
+
 import 'package:lyrics/lyricsViewer.dart';
 import 'fillView.dart';
 import 'lyric.dart';
@@ -16,9 +16,11 @@ class lyrics extends StatefulWidget {
 
 class _lyricsState extends State<lyrics> {
   static Duration _position = new Duration();
-  bool ispaused = false;
+
+
   bool isplaying = false;
-  bool isloop = false;
+
+  bool isfilling=true;
   LyricController lyricController = LyricController();
   AudioPlayer audioPlayer = AudioPlayer();
 
@@ -43,17 +45,50 @@ class _lyricsState extends State<lyrics> {
       });
     });
 
-    audioPlayer.setSourceUrl(widget.song_url);
+    /*audioPlayer.setSourceUrl(widget.song_url);*/
   }
 
   Future<void> play() async {
-    return await audioPlayer.play(UrlSource(widget.song_url));
+    return await audioPlayer.play(
+      AssetSource('music/${widget.song_name}'+'.mp3')
+      /*UrlSource(widget.song_url)*/);
   }
   Future<void> resume() async {
-    isplaying=true;
+    isfilling=false;
     return await audioPlayer.resume();
 
   }
+  Future <void> pause() async{
+    isplaying=false;
+    return  audioPlayer.pause();
+
+  }
+  Widget fill(Lyric? lyric){
+    if(isfilling){
+      pause();
+    }
+    return
+       Center(child:Column(children : listOfButtons(lyric!),))
+
+
+    ;
+  }
+
+  List<ElevatedButton> listOfButtons(Lyric lyric) {
+
+    var wordList = lyric.text.split(" ");
+    List<ElevatedButton> buttonsList = <ElevatedButton>[];
+    for (int i = 0; i < wordList.length; i++) {
+      buttonsList
+          .add(new ElevatedButton(onPressed: null, child: Text(wordList[i]), style: ElevatedButton.styleFrom(
+        primary: Colors.white,
+        onPrimary: Colors.black,
+      )));}
+    buttonsList.shuffle();
+    return buttonsList;
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +134,14 @@ class _lyricsState extends State<lyrics> {
               stream: lyricController.highlightedLyricIdxStream.stream,
               builder: (context, idxSnapshot) {
                 if(idxSnapshot.hasData){
-                if(idxSnapshot.data!>1){
+                if((idxSnapshot.data!%global.niveau==0)&&(idxSnapshot.data!=0)){
 
-                  audioPlayer.pause();
-                  return Center(child: ElevatedButton(onPressed: resume, child: Text("hello"),)
-                    ,);
+
+                  return fillView( lyric: lyricsSnapshot.data![idxSnapshot.data!],isfilling: isfilling,pause: pause,resume: resume,);
                 }}
-                    return lyricsView(lyrics: lyricsSnapshot.data ?? [],
-                        highlightedLyricIdx: idxSnapshot.data ?? -1);
+                isfilling=true;
+                  return lyricsView(lyrics: lyricsSnapshot.data ?? [],
+                      highlightedLyricIdx: idxSnapshot.data ?? -1);
 
 
 
@@ -117,11 +152,4 @@ class _lyricsState extends State<lyrics> {
     ));
   }
 }
-/*
-if ((lyricsSnapshot.data![idxSnapshot.data!+1]!.time ==
-_position) */
-/*&&(filled==false)*/ /*
-) {
-audioPlayer.pause();
-print("condition");
-}*/
+

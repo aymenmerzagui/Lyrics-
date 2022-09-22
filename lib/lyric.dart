@@ -20,7 +20,7 @@ class LyricController {
   late lyrics_Source source = lyrics_Source();
 
   fetchNewLyrics(String song_name) async {
-    statusMessageStream.sink.add("Loking for lyrics");
+    statusMessageStream.sink.add("Looking for lyrics");
     var lyrics = await source.fetchLyrics(song_name);
     if (lyrics == null) {
       statusMessageStream.sink.add("Lyrics not found");
@@ -61,6 +61,7 @@ class LyricController {
   dispose() {
     lyricsStream.close();
     highlightedLyricIdxStream.close();
+    statusMessageStream.close();
   }
 }
 

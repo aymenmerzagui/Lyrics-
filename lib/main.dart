@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics/list_song.dart';
 import 'list_song.dart';
+import 'globals.dart'as global;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
@@ -39,7 +40,10 @@ class _testState extends State<test> {
               appBar: AppBar(
                 title: Text("Lyrics"),
               ),
-              body: Padding(
+              body:
+              Center(child :Column(children : [
+                Text("Fill The Lyrics"),
+              Padding(
                 padding: const EdgeInsets.all(30),
                 child: Column(
                   children: [
@@ -57,6 +61,7 @@ class _testState extends State<test> {
                       ),
                       child: MaterialButton(
                         onPressed: () {
+                          global.niveau=6;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -86,6 +91,7 @@ class _testState extends State<test> {
                       ),
                       child: MaterialButton(
                         onPressed: () {
+                          global.niveau=5;
 
 
                           Navigator.push(
@@ -116,6 +122,7 @@ class _testState extends State<test> {
                       ),
                       child: MaterialButton(
                         onPressed: () {
+                          global.niveau=3;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -133,7 +140,7 @@ class _testState extends State<test> {
                     ),
                   ],
                 ),
-              ));
+              )])));
 
   }
 }
