@@ -23,7 +23,7 @@ void dispose(){
   _scrollController.dispose();
 }
   void scroll(int x, BuildContext y) {
-    var height = 100.0;
+    var height = 90.0;
     _scrollController.animateTo(
       lyricsView.padding + x * height - (MediaQuery
           .of(y)
@@ -43,12 +43,19 @@ void dispose(){
     TextStyle? style;
   if((lyricIdx%global.niveau==0)&&(lyricIdx!=0)){
 
-
+    if ((lyricIdx == highlightedLyricIdx)||(lyricIdx > highlightedLyricIdx!) ){
     style = Theme
         .of(context)
         .textTheme
         .headline1!
-        .copyWith(color: Colors.transparent, fontSize: lyricSize,fontWeight: FontWeight.bold);
+        .copyWith(color: Colors.transparent, fontSize: lyricSize,fontWeight: FontWeight.bold);}
+    else{
+      style = Theme
+          .of(context)
+          .textTheme
+          .headline5!
+          .copyWith(color: Colors.white24, fontSize: lyricSize,);
+    }
 
   }else{
 
@@ -72,6 +79,7 @@ void dispose(){
             .headline5!
             .copyWith(color: Colors.white30, fontSize: lyricSize,);
       }}
+
 
 
     /*if((lyricIdx%3==0)&&(lyricIdx==highlightedLyricIdx)){

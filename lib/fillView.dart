@@ -29,7 +29,7 @@ class fillView extends StatefulWidget {
 
 
 
-class _fillViewState extends State<fillView> {
+class _fillViewState extends State<fillView> with TickerProviderStateMixin {
   late String answer ="";
   late List<String> wordList ;
   late List<String> items=[] ;
@@ -59,7 +59,7 @@ class _fillViewState extends State<fillView> {
 
 
             }
-      }, child: Text(wordList[i],style: TextStyle(fontSize: 15),), style: ElevatedButton.styleFrom(
+      }, child: Text(wordList[i],style: TextStyle(fontSize: 25),), style: ElevatedButton.styleFrom(
         primary: Colors.white,
         onPrimary: Colors.black,
         onSurface: Colors.grey,
@@ -94,8 +94,9 @@ class _fillViewState extends State<fillView> {
 
         SizedBox(height: 50,),
         Text(answer,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blueGrey,fontSize: 60),),
+          SizedBox(height: 200,),
           Wrap(
-            alignment: WrapAlignment.spaceBetween,
+            alignment: WrapAlignment.spaceAround,
             direction: Axis.horizontal ,
         children:
          listOfButtons(),

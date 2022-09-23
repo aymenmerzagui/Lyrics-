@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:lyrics/lyricsViewer.dart';
@@ -19,7 +21,7 @@ class _lyricsState extends State<lyrics> {
 
 
   bool isplaying = false;
-
+  /*final  random = Random().nextInt(3);*/
   bool isfilling=true;
   LyricController lyricController = LyricController();
   AudioPlayer audioPlayer = AudioPlayer();
@@ -49,9 +51,12 @@ class _lyricsState extends State<lyrics> {
   }
 
   Future<void> play() async {
+
+
     return await audioPlayer.play(
-      AssetSource('music/${widget.song_name}'+'.mp3')
-      /*UrlSource(widget.song_url)*/);
+
+        UrlSource(widget.song_url)
+      );/*UrlSource(widget.song_url)*/
   }
   Future<void> resume() async {
     isfilling=false;
@@ -63,45 +68,12 @@ class _lyricsState extends State<lyrics> {
     return  audioPlayer.pause();
 
   }
-  Widget fill(Lyric? lyric){
-    if(isfilling){
-      pause();
-    }
-    return
-       Center(child:Column(children : listOfButtons(lyric!),))
 
 
-    ;
-  }
-
-  List<ElevatedButton> listOfButtons(Lyric lyric) {
-
-    var wordList = lyric.text.split(" ");
-    List<ElevatedButton> buttonsList = <ElevatedButton>[];
-    for (int i = 0; i < wordList.length; i++) {
-      buttonsList
-          .add(new ElevatedButton(onPressed: null, child: Text(wordList[i]), style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        onPrimary: Colors.black,
-      )));}
-    buttonsList.shuffle();
-    return buttonsList;
-
-  }
 
 
   @override
   Widget build(BuildContext context) {
-/*    print(global.filled);
-    if(global.filled){
-      setState(() {
-        isplaying=true;
-      });
-    }else {
-      setState(() {
-        isplaying=false;
-      });
-    }*/
 
     lyricController.init(widget.song_name);
     play();
@@ -134,7 +106,7 @@ class _lyricsState extends State<lyrics> {
               stream: lyricController.highlightedLyricIdxStream.stream,
               builder: (context, idxSnapshot) {
                 if(idxSnapshot.hasData){
-                if((idxSnapshot.data!%global.niveau==0)&&(idxSnapshot.data!=0)){
+                if((idxSnapshot.data!%(global.niveau)==0)&&(idxSnapshot.data!=0)){
 
 
                   return fillView( lyric: lyricsSnapshot.data![idxSnapshot.data!],isfilling: isfilling,pause: pause,resume: resume,);
